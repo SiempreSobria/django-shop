@@ -1,0 +1,10 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<div class="text-center my-5">
+  <div class="alert alert-success p-4 shadow-sm">
+    <h2>✅ Спасибо за заказ!</h2>
+    <p>Ваш заказ №{{ order.id }} успешно оформлен.</p>
+    <a href="{% url 'products_list' %}" class="btn btn-primary mt-3">Вернуться в магазин</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+<h2 class="mb-4">🛒 Ваша корзина</h2>
+
+{% if cart %}
+<div class="table-responsive">
+  <table class="table align-middle table-bordered shadow-sm">
+    <thead class="table-light">
+      <tr>
+        <th style="width: 80px;">Фото</th>
+        <th>Товар</th>
+        <th style="width: 120px;" class="text-center">Кол-во</th>
+        <th style="width: 120px;" class="text-end">Цена</th>
+        <th style="width: 120px;" class="text-end">Сумма</th>
+        <th style="width: 80px;"></th>
+      </tr>
+    </thead>
+    <tbody>
+
+      {% for item in cart %}
+      <tr id="cart-item-{{ item.product.id }}">
+        
+        <!-- Фото товара -->
+        <td>
+          {% if item.product.image %}
+            <img src="{{ item.product.image.url }}" class="img-fluid rounded" style="height:60px; width:60px; object-fit:cover;">
+          {% else %}
+            <img src="{% static 'shop/no_image.png' %}" class="img-fluid rounded" style="height:60px; width:60px; object-fit:cover;">
+          {% endif %}
+        </td>
+
+        <!-- Название -->
+        <td class="fw-semibold">{{ item.product.title }}</td>
+
+        <!-- Кол-во -->
+        <td class="text-center">{{ item.quantity }}</td>
+
+        <!-- Цена -->
+        <td class="text-end">{{ item.price }} ₽</td>
+
+        <!-- Сумма -->
+        <td class="text-end fw-bold">{{ item.total_price }} ₽</td>
+
+        <!-- Удалить -->
+        <td class="text-center">
+          <form method="post" action="{% url 'cart_remove' item.product.id %}">
+            {% csrf_token %}
+            <button type="submit"
+                    class="btn btn-outline-danger btn-sm remove-from-cart"
+                    data-product-id="{{ item.product.id }}"
+                    title="Удалить товар">
+              <i class="bi bi-trash"></i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+
+      <!-- Итоговые суммы -->
+      <tr class="fw-bold table-secondary">
+        <td colspan="4" class="text-end">Итого:</td>
+        <td id="cart-total-price" class="text-end">{{ cart.get_total_price }} ₽</td>
+        <td></td>
+      </tr>
+      <tr class="fw-bold">
+        <td colspan="4" class="text-end">Товаров:</td>
+        <td id="cart-total-quantity" class="text-end">{{ cart.get_total_quantity }} шт.</td>
+        <td></td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<!-- Кнопки -->
+<div class="d-flex justify-content-between mt-3">
+  <a href="{% url 'products_list' %}" class="btn btn-outline-secondary btn-lg">
+    ← Продолжить покупки
+  </a>
+  <a href="{% url 'order_create' %}" class="btn btn-success btn-lg">
+    ✔ Оформить заказ
+  </a>
+</div>
+
+{% else %}
+
+<!-- ПУСТАЯ КОРЗИНА -->
+<div class="text-center py-5">
+  <img src="{% static 'shop/empty_cart.png' %}" alt="Корзина пуста" style="width:140px; opacity:.8;">
+  <h4 class="mt-3">Ваша корзина пуста</h4>
+  <p class="text-muted">Добавьте товары из каталога</p>
+  <a href="{% url 'products_list' %}" class="btn btn-primary btn-lg mt-2">
+    Перейти в каталог
+  </a>
+</div>
+
+{% endif %}
+{% endblock %}

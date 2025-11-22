@@ -1,0 +1,95 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <!-- Изображение товара -->
+    <div class="col-md-6">
+      <div class="card-img-top-wrapper">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
+        {% else %}
+          <img src="{% static 'shop/no_image.png' %}" class="card-img-top" alt="Нет изображения">
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Информация о товаре -->
+    <div class="col-md-6">
+      <div class="product-info-card">
+        <h1 class="product-title-detail">{{ product.title }}</h1>
+
+        {% if product.category %}
+          <div class="category-badge">
+            {{ product.category.name }}
+          </div>
+        {% endif %}
+
+        <div class="product-price-detail">
+          {{ product.price }}
+        </div>
+
+        <div class="product-description">
+          {{ product.description|linebreaksbr }}
+        </div>
+
+        <div class="d-flex gap-3 flex-wrap">
+          <form method="post" action="{% url 'cart_add' product.id %}" class="flex-fill">
+            {% csrf_token %}
+            <button 
+              type="submit" 
+              class="btn btn-success w-100 add-to-cart"
+              data-product-id="{{ product.id }}"
+              data-url="{% url 'cart_add' product.id %}">
+              🛒 В корзину
+            </button>
+          </form>
+
+          <a href="{% url 'products_list' %}" class="btn btn-outline-secondary flex-fill">
+            ← Назад к товарам
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if similar_products %}
+  <!-- Похожие товары -->
+  <div class="similar-products-section">
+    <h3 class="similar-products-title">Похожие товары</h3>
+    
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      {% for p in similar_products %}
+      <div class="col">
+        <div class="card h-100 shadow-sm product-card">
+          <div class="product-image-container">
+            <a href="{% url 'product_detail' p.slug %}" class="text-decoration-none">
+              {% if p.image %}
+                <img src="{{ p.image.url }}" class="product-image" alt="{{ p.title }}" loading="lazy">
+              {% else %}
+                <img src="{% static 'shop/no_image.png' %}" class="product-image" alt="Нет изображения" loading="lazy">
+              {% endif %}
+            </a>
+          </div>
+          
+          <div class="card-body d-flex flex-column p-3">
+            <a href="{% url 'product_detail' p.slug %}" class="text-decoration-none text-dark">
+              <h6 class="product-title">{{ p.title }}</h6>
+            </a>
+            
+            <div class="product-price mt-auto">
+              <span class="text-success fw-bold">{{ p.price }} ₽</span>
+              <a href="{% url 'product_detail' p.slug %}" class="btn btn-outline-primary btn-sm ms-2">
+                Подробнее
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
