@@ -25,3 +25,4 @@ ENV/
 # Static files
 /staticfiles/
 /media/
+migrations/
