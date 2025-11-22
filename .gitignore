@@ -1,0 +1,27 @@
+# Django
+*.sqlite3
+*.pyc
+__pycache__/
+db.sqlite3
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Static files
+/staticfiles/
+/media/
